@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CE6E92522F5718BD0026DB18 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CE6E92512F5718BD0026DB18 /* Alamofire */; };
+		CE6E92552F5718CC0026DB18 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CE6E92542F5718CC0026DB18 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		CE6E91C12F50BD4E0026DB18 /* NewspaperApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewspaperApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE6E92552F5718CC0026DB18 /* Kingfisher in Frameworks */,
+				CE6E92522F5718BD0026DB18 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,8 @@
 			);
 			name = NewspaperApp;
 			packageProductDependencies = (
+				CE6E92512F5718BD0026DB18 /* Alamofire */,
+				CE6E92542F5718CC0026DB18 /* Kingfisher */,
 			);
 			productName = NewspaperApp;
 			productReference = CE6E91C12F50BD4E0026DB18 /* NewspaperApp.app */;
@@ -107,6 +116,10 @@
 			);
 			mainGroup = CE6E91B82F50BD4E0026DB18;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CE6E92502F5718BD0026DB18 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				CE6E92532F5718CC0026DB18 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE6E91C22F50BD4E0026DB18 /* Products */;
 			projectDirPath = "";
@@ -351,6 +364,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CE6E92502F5718BD0026DB18 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.1;
+			};
+		};
+		CE6E92532F5718CC0026DB18 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE6E92512F5718BD0026DB18 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE6E92502F5718BD0026DB18 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		CE6E92542F5718CC0026DB18 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE6E92532F5718CC0026DB18 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE6E91B92F50BD4E0026DB18 /* Project object */;
 }
