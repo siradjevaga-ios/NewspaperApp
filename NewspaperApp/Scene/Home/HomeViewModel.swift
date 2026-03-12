@@ -13,20 +13,20 @@ final class HomeViewModel {
     private let useCase: HomeUseCase
     
     var error: ((String) -> Void)?
-    var succes: (() -> Void)?
+    var success: (() -> Void)?
     
     init(useCase: HomeUseCase) {
         self.useCase = useCase
     }
     
-    func getNews() {
+    func getNewsList() {
         useCase.getNews { [weak self] data, errorMessage in
             if let errorMessage {
                 self?.error?(errorMessage)
             }
             else if let data {
                 self?.articles = data.articles ?? []
-                self?.succes?()
+                self?.success?()
             }
         }
     }

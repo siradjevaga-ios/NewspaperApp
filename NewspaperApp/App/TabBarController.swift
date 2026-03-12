@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
     }
     
     private func configureViewControllers() {
-        let homeController = HomeController()
+        let homeController = HomeController(viewModel: .init(useCase: HomeManager()))
         let homeNav = UINavigationController(rootViewController: homeController)
         homeNav.tabBarItem = .init(title: "Home",
                                    image: UIImage(systemName: "house"),
