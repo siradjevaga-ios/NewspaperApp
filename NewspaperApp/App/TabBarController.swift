@@ -21,7 +21,7 @@ class TabBarController: UITabBarController {
         homeNav.tabBarItem = .init(title: "Home",
                                    image: UIImage(systemName: "house"),
                                    tag: 0)
-        let popularcontroller = PopularController()
+        let popularcontroller = PopularController(viewModel: .init(useCase: PopularManager()))
         let popularNav = UINavigationController(rootViewController: popularcontroller)
         popularNav.tabBarItem = .init(title: "Popular", image: UIImage(systemName: "flame"), tag: 1)
         
@@ -34,5 +34,4 @@ class TabBarController: UITabBarController {
     private func configureUI() {
         tabBar.backgroundColor = .white
     }
-
 }
