@@ -9,6 +9,21 @@ import UIKit
 
 class HomeController: BaseController {
     
+    private lazy var categoryCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.dataSource = self
+        cv.delegate = self
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = .clear
+        cv.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCell")
+        return cv
+    }()
+    
+    private let categories = ["General", "Business", "Technology", "Sports", "Science", "Health"]
+    
     private lazy var table: UITableView = {
         let t = UITableView()
         t.delegate = self
@@ -32,6 +47,7 @@ class HomeController: BaseController {
         super.viewDidLoad()
     }
     override func configureUI() {
+        view.addSubview(categoryCollection)
         view.addSubview(table)
     }
     
@@ -47,7 +63,12 @@ class HomeController: BaseController {
     }
     override func configureConstraints() {
         NSLayoutConstraint.activate([
-            table.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            categoryCollection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            categoryCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            categoryCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            categoryCollection.heightAnchor.constraint(equalToConstant: 48),
+            
+            table.topAnchor.constraint(equalTo: categoryCollection.bottomAnchor, constant: 12),
             table.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             table.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             table.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
@@ -55,7 +76,30 @@ class HomeController: BaseController {
     }
 }
 
-extension HomeController: TableConfigure {
+extension HomeController: TableConfigure, CollectionConfigure {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        categories.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath)
+        cell.backgroundColor = .systemCyan
+        cell.layer.cornerRadius = 16
+        
+        let label = UILabel(frame: cell.contentView.bounds)
+        label.text = categories[indexPath.item]
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .white
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.addSubview(label)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        .init(width: 100, height: 40)
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.articles.count
     }
@@ -66,3 +110,5 @@ extension HomeController: TableConfigure {
         return cell
     }
 }
+
+

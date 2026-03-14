@@ -8,5 +8,5 @@
 import Foundation
 
 protocol HomeUseCase {
-    func getNews(completion: @escaping (NewsResponse?, String?) -> Void)
+    func getNews(category: String, completion: @escaping (NewsResponse?, String?) -> Void)
 }
