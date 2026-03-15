@@ -29,7 +29,7 @@ class HomeController: BaseController {
         t.delegate = self
         t.dataSource = self
         t.backgroundColor = .systemBackground
-        t.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        t.register(HomeNewsCell.self, forCellReuseIdentifier: "HomeNewsCell")
         t.translatesAutoresizingMaskIntoConstraints = false
         return t
     }()
@@ -110,8 +110,9 @@ extension HomeController: TableConfigure, CollectionConfigure {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.textLabel?.text = viewModel.articles[indexPath.row].title
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HomeNewsCell", for: indexPath) as! HomeNewsCell
+        let article = viewModel.articles[indexPath.row]
+        cell.setCell(item: article)
         return cell
     }
 }

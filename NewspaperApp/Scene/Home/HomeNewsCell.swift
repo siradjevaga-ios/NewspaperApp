@@ -100,4 +100,11 @@ class HomeNewsCell: UITableViewCell {
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
         ])
     }
+    
+    func setCell(item: Article) {
+        titleLabel.text = item.title
+        descriptionLabel.text = item.description
+        timeLabel.text = item.publishedAt
+        categoryLabel.text = "GENERAL"
+    }
 }
