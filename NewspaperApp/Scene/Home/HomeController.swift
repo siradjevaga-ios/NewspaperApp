@@ -100,6 +100,11 @@ extension HomeController: TableConfigure, CollectionConfigure {
         .init(width: 100, height: 40)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCategory = categories[indexPath.row].lowercased()
+        viewModel.getNewsList(category: selectedCategory)
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.articles.count
     }

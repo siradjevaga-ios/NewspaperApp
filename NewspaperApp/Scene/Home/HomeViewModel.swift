@@ -19,7 +19,7 @@ final class HomeViewModel {
         self.useCase = useCase
     }
     
-    func getNewsList(category: String = "sports") {
+    func getNewsList(category: String = "general") {
         useCase.getNews(category: category) { [weak self] data, errorMessage in
             if let errorMessage {
                 self?.error?(errorMessage)
