@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class HomeNewsCell: UITableViewCell {
     
@@ -101,10 +102,14 @@ class HomeNewsCell: UITableViewCell {
         ])
     }
     
-    func setCell(item: Article) {
+    func setCell(item: Article, category: String) {
         titleLabel.text = item.title
         descriptionLabel.text = item.description
         timeLabel.text = item.publishedAt
-        categoryLabel.text = "GENERAL"
+        categoryLabel.text = category.uppercased()
+        
+        if let urlString = item.urlToImage, let url = URL(string: urlString) {
+            newsImageVieW.kf.setImage(with: url, placeholder: UIImage(named: "placeholder"))
+        }
     }
 }

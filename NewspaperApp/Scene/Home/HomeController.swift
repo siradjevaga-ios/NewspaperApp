@@ -33,7 +33,12 @@ class HomeController: BaseController {
         t.translatesAutoresizingMaskIntoConstraints = false
         return t
     }()
+    
     private let viewModel: HomeViewModel
+    
+    private var selectedCategory: String = "General"
+    
+    private var selectedCategoryIndex: Int = 0
 
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -83,8 +88,10 @@ extension HomeController: TableConfigure, CollectionConfigure {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath)
-        cell.backgroundColor = .systemCyan
+        cell.backgroundColor = .systemBlue
         cell.layer.cornerRadius = 16
+        
+        
         
         let label = UILabel(frame: cell.contentView.bounds)
         label.text = categories[indexPath.item]
@@ -101,8 +108,10 @@ extension HomeController: TableConfigure, CollectionConfigure {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedCategory = categories[indexPath.row].lowercased()
-        viewModel.getNewsList(category: selectedCategory)
+        selectedCategory = categories[indexPath.item]
+        selectedCategoryIndex = indexPath.item
+        viewModel.getNewsList(category: selectedCategory.lowercased())
+        collectionView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -112,7 +121,7 @@ extension HomeController: TableConfigure, CollectionConfigure {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeNewsCell", for: indexPath) as! HomeNewsCell
         let article = viewModel.articles[indexPath.row]
-        cell.setCell(item: article)
+        cell.setCell(item: article, category: selectedCategory)
         return cell
     }
 }
