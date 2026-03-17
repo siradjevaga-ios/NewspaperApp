@@ -18,7 +18,9 @@ class HomeController: BaseController {
         cv.delegate = self
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = .clear
-        cv.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCell")
+        cv.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
+        
+        cv.showsHorizontalScrollIndicator = false
         return cv
     }()
     
@@ -30,6 +32,7 @@ class HomeController: BaseController {
         t.dataSource = self
         t.backgroundColor = .systemBackground
         t.register(HomeNewsCell.self, forCellReuseIdentifier: "HomeNewsCell")
+        t.showsVerticalScrollIndicator = false
         t.translatesAutoresizingMaskIntoConstraints = false
         return t
     }()
@@ -87,19 +90,13 @@ extension HomeController: TableConfigure, CollectionConfigure {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath)
-        cell.backgroundColor = .systemBlue
-        cell.layer.cornerRadius = 16
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
         
+        let isSelected = (indexPath.item == selectedCategoryIndex)
         
-        
-        let label = UILabel(frame: cell.contentView.bounds)
-        label.text = categories[indexPath.item]
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-        cell.contentView.addSubview(label)
+        cell.titleLabel.text = categories[indexPath.item]
+        cell.contentView.backgroundColor = isSelected ? .systemBlue: .systemGray6
+        cell.titleLabel.textColor = isSelected ? .white : .darkGray
         return cell
     }
     
