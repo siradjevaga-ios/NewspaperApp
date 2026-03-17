@@ -19,8 +19,8 @@ class HomeController: BaseController {
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = .clear
         cv.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
-        
         cv.showsHorizontalScrollIndicator = false
+        
         return cv
     }()
     
@@ -57,6 +57,8 @@ class HomeController: BaseController {
     override func configureUI() {
         view.addSubview(categoryCollection)
         view.addSubview(table)
+        categoryCollection.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+//        categoryCollection.scrollIndicatorInsets = categoryCollection.contentInset
     }
     
     override func configureViewModel() {
@@ -70,6 +72,7 @@ class HomeController: BaseController {
         }
     }
     override func configureConstraints() {
+        
         NSLayoutConstraint.activate([
             categoryCollection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             categoryCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -119,6 +122,7 @@ extension HomeController: TableConfigure, CollectionConfigure {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeNewsCell", for: indexPath) as! HomeNewsCell
         let article = viewModel.articles[indexPath.row]
         cell.setCell(item: article, category: selectedCategory)
+        cell.selectionStyle = .none
         return cell
     }
 }

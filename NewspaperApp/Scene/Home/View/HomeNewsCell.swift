@@ -31,8 +31,11 @@ class HomeNewsCell: UITableViewCell {
     private let categoryLabel: UILabel = {
        let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = .systemFont(ofSize: 12, weight: .bold)
+        l.font = .systemFont(ofSize: 10, weight: .bold)
         l.textColor = .systemBlue
+        l.backgroundColor = .systemGray6
+        l.layer.cornerRadius = 8
+        l.layer.masksToBounds = true
         return l
     }()
     
@@ -40,7 +43,7 @@ class HomeNewsCell: UITableViewCell {
        let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
         l.font = .systemFont(ofSize: 12, weight: .regular)
-        l.textColor = .lightGray
+        l.textColor = .darkGray
         return l
     }()
     
@@ -88,6 +91,8 @@ class HomeNewsCell: UITableViewCell {
             newsImageVieW.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             newsImageVieW.heightAnchor.constraint(equalToConstant: 200),
             
+            categoryLabel.heightAnchor.constraint(equalToConstant: 24),
+            
             infoStackView.topAnchor.constraint(equalTo: newsImageVieW.bottomAnchor, constant: 12),
             infoStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
@@ -105,7 +110,7 @@ class HomeNewsCell: UITableViewCell {
     func setCell(item: Article, category: String) {
         titleLabel.text = item.title
         descriptionLabel.text = item.description
-        timeLabel.text = item.publishedAt
+        timeLabel.text = item.publishedAt?.setRelativeTime()
         categoryLabel.text = category.uppercased()
         
         if let urlString = item.urlToImage, let url = URL(string: urlString) {
