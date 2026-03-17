@@ -125,6 +125,11 @@ extension HomeController: TableConfigure, CollectionConfigure {
         cell.selectionStyle = .none
         return cell
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let controller = HomeDetailController()
+        controller.article = viewModel.articles[indexPath.row]
+        navigationController?.pushViewController(controller, animated: true)
+    }
 }
 
 
