@@ -128,6 +128,7 @@ extension HomeController: TableConfigure, CollectionConfigure {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = HomeDetailController()
         controller.article = viewModel.articles[indexPath.row]
+        controller.categoryName = selectedCategory
         navigationController?.pushViewController(controller, animated: true)
     }
 }

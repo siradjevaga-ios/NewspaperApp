@@ -10,6 +10,7 @@ import Kingfisher
 
 class HomeDetailController: BaseController {
     var article: Article?
+    var categoryName: String?
     
     private let newsImageView: UIImageView = {
        let iv = UIImageView()
@@ -24,11 +25,10 @@ class HomeDetailController: BaseController {
             label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 12, weight: .bold)
             label.textColor = .systemBlue
-            label.backgroundColor = UIColor.systemBlue/*.withAlphaComponent(0.1)*/
-            label.layer.cornerRadius = 4
+            label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+            label.layer.cornerRadius = 8
             label.clipsToBounds = true
             label.textAlignment = .center
-            label.text = "TECHNOLOGY"
             return label
         }()
     
@@ -40,10 +40,30 @@ class HomeDetailController: BaseController {
             return label
         }()
     
+    private let authorImage: UIImageView = {
+       let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.contentMode = .center
+        iv.image = UIImage(systemName: "person.fill")
+        iv.tintColor = .systemGray6
+        iv.backgroundColor = .systemBlue
+        iv.layer.cornerRadius = 20
+        iv.clipsToBounds = true
+        return iv
+    }()
+    
+    private let containerView: UIView = {
+       let cv = UIView()
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = .secondarySystemBackground
+        cv.layer.cornerRadius = 12
+        return cv
+    }()
+    
     private let authorLabel: UILabel = {
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = .systemFont(ofSize: 16, weight: .semibold)
+            label.font = .systemFont(ofSize: 14, weight: .semibold)
             return label
         }()
     
@@ -60,7 +80,7 @@ class HomeDetailController: BaseController {
         dl.translatesAutoresizingMaskIntoConstraints = false
         dl.font = .systemFont(ofSize: 16, weight: .regular)
         dl.numberOfLines = 0
-        dl.textColor = .secondaryLabel
+        dl.textColor = .systemGray
         return dl
     }()
     
@@ -86,10 +106,12 @@ class HomeDetailController: BaseController {
         view.addSubview(newsImageView)
         view.addSubview(categoryLabel)
         view.addSubview(titleLabel)
-        view.addSubview(authorLabel)
-        view.addSubview(sourceAndDateLabel)
+        view.addSubview(containerView)
         view.addSubview(descriptionLabel)
         view.addSubview(readMoreButton)
+        containerView.addSubview(authorImage)
+        containerView.addSubview(authorLabel)
+        containerView.addSubview(sourceAndDateLabel)
     }
     override func configureConstraints() {
         super.configureConstraints()
@@ -109,13 +131,24 @@ class HomeDetailController: BaseController {
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            authorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
-            authorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            sourceAndDateLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
-            sourceAndDateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            containerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            containerView.heightAnchor.constraint(equalToConstant: 60),
             
-            descriptionLabel.topAnchor.constraint(equalTo: sourceAndDateLabel.bottomAnchor, constant: 20),
+            authorImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+            authorImage.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            authorImage.widthAnchor.constraint(equalToConstant: 40),
+            authorImage.heightAnchor.constraint(equalToConstant: 40),
+
+            authorLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            authorLabel.leadingAnchor.constraint(equalTo: authorImage.trailingAnchor, constant: 12),
+            
+            sourceAndDateLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 2),
+            sourceAndDateLabel.leadingAnchor.constraint(equalTo: authorImage.trailingAnchor, constant: 12),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
@@ -130,6 +163,7 @@ class HomeDetailController: BaseController {
         titleLabel.text = article.title
         descriptionLabel.text = article.description
         authorLabel.text = article.author ?? "Unknown Author"
+        categoryLabel.text = categoryName?.uppercased() ?? "GENERAl"
         
         let source = article.source?.name ?? "Source"
         let date = article.publishedAt?.setRelativeTime() ?? ""
