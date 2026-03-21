@@ -61,11 +61,12 @@ class HomeDetailController: BaseController {
     }()
     
     private let authorLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = .systemFont(ofSize: 14, weight: .semibold)
-            return label
-        }()
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.numberOfLines = 0
+        return label
+    }()
     
     private let sourceAndDateLabel: UILabel = {
         let label = UILabel()
@@ -95,6 +96,25 @@ class HomeDetailController: BaseController {
         return b
     }()
     
+    
+    private lazy var bookmarkButton: UIBarButtonItem = {
+        let bookmark = UIBarButtonItem(
+            image: UIImage(systemName: "bookmark"),
+            style: .plain,
+            target: self,
+            action: #selector(bookmarkTapped))
+        bookmark.tintColor = .systemBlue
+        return bookmark
+    }()
+    
+    
+    @objc
+    private func bookmarkTapped() {
+        let isFilled = bookmarkButton.image == UIImage(systemName: "bookmark.fill")
+        bookmarkButton.image = UIImage(systemName: isFilled ? "bookmark" : "bookmark.fill")
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -112,6 +132,8 @@ class HomeDetailController: BaseController {
         containerView.addSubview(authorImage)
         containerView.addSubview(authorLabel)
         containerView.addSubview(sourceAndDateLabel)
+        navigationItem.rightBarButtonItem = bookmarkButton
+        
     }
     override func configureConstraints() {
         super.configureConstraints()
@@ -135,18 +157,21 @@ class HomeDetailController: BaseController {
             containerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            containerView.heightAnchor.constraint(equalToConstant: 60),
+//            containerView.heightAnchor.constraint(equalToConstant: 60),
             
-            authorImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
-            authorImage.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            authorImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
+            authorImage.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
             authorImage.widthAnchor.constraint(equalToConstant: 40),
             authorImage.heightAnchor.constraint(equalToConstant: 40),
 
-            authorLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            authorLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: authorImage.trailingAnchor, constant: 12),
+            authorLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
             
-            sourceAndDateLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 2),
+            
+            sourceAndDateLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
             sourceAndDateLabel.leadingAnchor.constraint(equalTo: authorImage.trailingAnchor, constant: 12),
+            sourceAndDateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
             
             descriptionLabel.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
