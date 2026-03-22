@@ -54,14 +54,52 @@ class LoginController: BaseController {
         return l
     }()
     
-    private let orSeparatorStack: UIStackView = {
+    private lazy var orSeparatorStack: UIStackView = {
        let stack = UIStackView()
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.spacing = 10
+        
+        func createLine() -> UIView {
+            let view = UIView()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            view.backgroundColor = .systemGray4
+            return view
+        }
+        
+        let leftLine = createLine()
+        let rightLine = createLine()
+        
+        stack.addArrangedSubview(leftLine)
+        stack.addArrangedSubview(orLabel)
+        stack.addArrangedSubview(rightLine)
+        
+        leftLine.widthAnchor.constraint(equalTo: rightLine.widthAnchor).isActive = true
+        
         return stack
     }()
+   
+    private func createSocialButton(title: String, image: UIImage?) -> UIButton {
+        var config = UIButton.Configuration.plain()
+        config.image = image?.withRenderingMode(.alwaysOriginal)
+        config.title = title
+        config.background.strokeWidth = 1
+        config.background.strokeColor = .systemGray4
+        config.imagePadding = 12
+        config.imagePlacement = .leading
+        config.baseForegroundColor = .label
+        
+        let button = UIButton(configuration: config)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return button
+    }
+    
+    private lazy var googleButton = createSocialButton(title: "Continue with Google", image: UIImage(named: <#T##String#>))
+    private lazy var iosButton = createSocialButton(title: "Continue with IOS", image: UIImage(systemName: "apple.logo"))
+    private lazy var faceBookButton = createSocialButton(title: "Continue with Facebook", image: UIImage(named: <#T##String#>))
     
     override func viewDidLoad() {
         super.viewDidLoad()
