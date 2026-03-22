@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		CE6E92522F5718BD0026DB18 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CE6E92512F5718BD0026DB18 /* Alamofire */; };
 		CE6E92552F5718CC0026DB18 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CE6E92542F5718CC0026DB18 /* Kingfisher */; };
+		CEC683CF2F6F1B7C0033939F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CEC683CE2F6F1B7C0033939F /* FirebaseAuth */; };
+		CEC683D12F6F1B7C0033939F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CEC683D02F6F1B7C0033939F /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE6E92552F5718CC0026DB18 /* Kingfisher in Frameworks */,
+				CEC683D12F6F1B7C0033939F /* FirebaseFirestore in Frameworks */,
+				CEC683CF2F6F1B7C0033939F /* FirebaseAuth in Frameworks */,
 				CE6E92522F5718BD0026DB18 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +91,8 @@
 			packageProductDependencies = (
 				CE6E92512F5718BD0026DB18 /* Alamofire */,
 				CE6E92542F5718CC0026DB18 /* Kingfisher */,
+				CEC683CE2F6F1B7C0033939F /* FirebaseAuth */,
+				CEC683D02F6F1B7C0033939F /* FirebaseFirestore */,
 			);
 			productName = NewspaperApp;
 			productReference = CE6E91C12F50BD4E0026DB18 /* NewspaperApp.app */;
@@ -119,6 +125,7 @@
 			packageReferences = (
 				CE6E92502F5718BD0026DB18 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				CE6E92532F5718CC0026DB18 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				CEC683CD2F6F1B7C0033939F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE6E91C22F50BD4E0026DB18 /* Products */;
@@ -382,6 +389,14 @@
 				minimumVersion = 8.7.0;
 			};
 		};
+		CEC683CD2F6F1B7C0033939F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.11.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -394,6 +409,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE6E92532F5718CC0026DB18 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		CEC683CE2F6F1B7C0033939F /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEC683CD2F6F1B7C0033939F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CEC683D02F6F1B7C0033939F /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEC683CD2F6F1B7C0033939F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
