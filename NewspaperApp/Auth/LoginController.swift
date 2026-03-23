@@ -9,6 +9,24 @@ import UIKit
 
 class LoginController: BaseController {
     
+    private lazy var mainStackView: UIStackView = {
+       let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        stack.addArrangedSubview(emailTextField)
+        stack.addArrangedSubview(passwordTextField)
+        stack.addArrangedSubview(continueButton)
+        stack.addArrangedSubview(orSeparatorStack)
+        stack.addArrangedSubview(googleButton)
+        stack.addArrangedSubview(iosButton)
+        stack.addArrangedSubview(facebookButton)
+        stack.setCustomSpacing(24, after: orSeparatorStack)
+        return stack
+    }()
+    
     private let emailTextField: UITextField = {
        let tf = UITextField()
         tf.borderStyle = .roundedRect
@@ -43,6 +61,17 @@ class LoginController: BaseController {
         let imageName = passwordTextField.isSecureTextEntry ? "eye.slash" : "eye"
         sender.setImage(UIImage(systemName: imageName), for: .normal)
     }
+    
+    private let continueButton: UIButton = {
+        let b = UIButton(type: .system)
+        b.setTitle("Continue", for: .normal)
+        b.layer.cornerRadius = 4
+        b.setTitleColor(.white, for: .normal)
+        b.backgroundColor = .black
+        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        b.translatesAutoresizingMaskIntoConstraints = false
+        return b
+    }()
     
     private let orLabel: UILabel = {
        let l = UILabel()
@@ -97,9 +126,9 @@ class LoginController: BaseController {
         return button
     }
     
-    private lazy var googleButton = createSocialButton(title: "Continue with Google", image: UIImage(named: <#T##String#>))
+    private lazy var googleButton = createSocialButton(title: "Continue with Google", image: UIImage(named: "google_logo"))
     private lazy var iosButton = createSocialButton(title: "Continue with IOS", image: UIImage(systemName: "apple.logo"))
-    private lazy var faceBookButton = createSocialButton(title: "Continue with Facebook", image: UIImage(named: <#T##String#>))
+    private lazy var facebookButton = createSocialButton(title: "Continue with Facebook", image: UIImage(named: "facebook_logo"))
     
     override func viewDidLoad() {
         super.viewDidLoad()
