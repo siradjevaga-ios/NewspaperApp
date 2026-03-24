@@ -44,7 +44,7 @@ class LoginController: BaseController {
     private let titleLabel: UILabel = {
        let t = UILabel()
         t.translatesAutoresizingMaskIntoConstraints = false
-        t.text = "Log in or create an account"
+        t.text = "Log in or Create an account"
         t.font = .systemFont(ofSize: 24, weight: .medium)
         t.numberOfLines = 0
         return t
@@ -197,6 +197,7 @@ class LoginController: BaseController {
     override func configureUI() {
         super.configureUI()
         view.addSubview(mainStackView)
+        view.backgroundColor = .systemBackground
     }
     
     override func configureConstraints() {

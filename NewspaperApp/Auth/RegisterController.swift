@@ -18,14 +18,15 @@ class RegisterController: BaseController {
         
         stack.addArrangedSubview(appLogoLabel)
         stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(fullnameTextField)
         stack.addArrangedSubview(emailTextField)
         stack.addArrangedSubview(passwordTextField)
-        stack.addArrangedSubview(continueButton)
+        stack.addArrangedSubview(signUpButton)
         stack.addArrangedSubview(orSeparatorStack)
         stack.addArrangedSubview(googleButton)
         stack.addArrangedSubview(iosButton)
         stack.addArrangedSubview(facebookButton)
-        stack.addArrangedSubview(signUpButton)
+        stack.addArrangedSubview(haveAccountButton)
         
         stack.setCustomSpacing(32, after: appLogoLabel)
         stack.setCustomSpacing(24, after: orSeparatorStack)
@@ -94,7 +95,7 @@ class RegisterController: BaseController {
         sender.setImage(UIImage(systemName: imageName), for: .normal)
     }
     
-    private let continueButton: UIButton = {
+    private lazy var signUpButton: UIButton = {
         let b = UIButton(type: .system)
         b.setTitle("Sign Up", for: .normal)
         b.layer.cornerRadius = 4
@@ -175,23 +176,28 @@ class RegisterController: BaseController {
     private lazy var iosButton = createSocialButton(title: "Continue with IOS", image: UIImage(systemName: "apple.logo"))
     private lazy var facebookButton = createSocialButton(title: "Continue with Facebook", image: UIImage(named: "facebook_logo"))
     
-    private let signUpButton: UIButton = {
+    private lazy var haveAccountButton: UIButton = {
         let button = UIButton(type: .system)
         let title = NSMutableAttributedString(
             string: "Already have an account?",
             attributes: [.foregroundColor: UIColor.gray, .font: UIFont.systemFont(ofSize: 14)]
         )
         
-        let signUpPart = NSAttributedString(
+        let signInPart = NSAttributedString(
             string: " Sign in now",
             attributes: [.foregroundColor: UIColor.black,
             .font: UIFont.boldSystemFont(ofSize: 14)]
         )
-        title.append(signUpPart)
+        title.append(signInPart)
         button.setAttributedTitle(title, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(handleBackToLogin), for: .touchUpInside)
         return button
     }()
+    
+    @objc func handleBackToLogin() {
+        navigationController?.popViewController(animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
