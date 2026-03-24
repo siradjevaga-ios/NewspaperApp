@@ -1,13 +1,13 @@
 //
-//  LoginController.swift
+//  RegisterController.swift
 //  NewspaperApp
 //
-//  Created by user on 22.03.26.
+//  Created by user on 24.03.26.
 //
 
 import UIKit
 
-class LoginController: BaseController {
+class RegisterController: BaseController {
     
     private lazy var mainStackView: UIStackView = {
        let stack = UIStackView()
@@ -44,17 +44,26 @@ class LoginController: BaseController {
     private let titleLabel: UILabel = {
        let t = UILabel()
         t.translatesAutoresizingMaskIntoConstraints = false
-        t.text = "Log in or create an account"
+        t.text = "Create an account"
         t.font = .systemFont(ofSize: 24, weight: .medium)
         t.numberOfLines = 0
         return t
+    }()
+    
+    private let fullnameTextField: UITextField = {
+       let fullname = UITextField()
+        fullname.borderStyle = .roundedRect
+        fullname.autocorrectionType = .no
+        fullname.placeholder = "Full Name"
+        fullname.translatesAutoresizingMaskIntoConstraints = false
+        return fullname
     }()
     
     private let emailTextField: UITextField = {
        let tf = UITextField()
         tf.borderStyle = .roundedRect
         tf.autocorrectionType = .no
-        tf.placeholder = "Email Address"
+        tf.placeholder = "Email address"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.keyboardType = .emailAddress
         tf.autocapitalizationType = .none
@@ -87,7 +96,7 @@ class LoginController: BaseController {
     
     private let continueButton: UIButton = {
         let b = UIButton(type: .system)
-        b.setTitle("Continue", for: .normal)
+        b.setTitle("Sign Up", for: .normal)
         b.layer.cornerRadius = 4
         b.setTitleColor(.white, for: .normal)
         b.backgroundColor = .black
@@ -166,32 +175,27 @@ class LoginController: BaseController {
     private lazy var iosButton = createSocialButton(title: "Continue with IOS", image: UIImage(systemName: "apple.logo"))
     private lazy var facebookButton = createSocialButton(title: "Continue with Facebook", image: UIImage(named: "facebook_logo"))
     
-    private lazy var signUpButton: UIButton = {
+    private let signUpButton: UIButton = {
         let button = UIButton(type: .system)
         let title = NSMutableAttributedString(
-            string: "Don't have an account?",
+            string: "Already have an account?",
             attributes: [.foregroundColor: UIColor.gray, .font: UIFont.systemFont(ofSize: 14)]
         )
         
         let signUpPart = NSAttributedString(
-            string: " Sign Up",
+            string: " Sign in now",
             attributes: [.foregroundColor: UIColor.black,
             .font: UIFont.boldSystemFont(ofSize: 14)]
         )
         title.append(signUpPart)
         button.setAttributedTitle(title, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
         return button
     }()
     
-    @objc func handleSignUp() {
-        let vc = RegisterController()
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
     }
     
     override func configureUI() {

@@ -12,6 +12,20 @@ class HomeDetailController: BaseController {
     var article: Article?
     var categoryName: String?
     
+    private let scrollView: UIScrollView = {
+       let s = UIScrollView()
+        s.translatesAutoresizingMaskIntoConstraints = false
+//        s.showsVerticalScrollIndicator = true
+        s.alwaysBounceVertical = true
+        return s
+    }()
+    
+    private let contentView: UIView = {
+       let c = UIView()
+        c.translatesAutoresizingMaskIntoConstraints = false
+        return c
+    }()
+    
     private let newsImageView: UIImageView = {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -123,15 +137,20 @@ class HomeDetailController: BaseController {
     
     override func configureUI() {
         title = "News Detail"
-        view.addSubview(newsImageView)
-        view.addSubview(categoryLabel)
-        view.addSubview(titleLabel)
-        view.addSubview(containerView)
-        view.addSubview(descriptionLabel)
-        view.addSubview(readMoreButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubview(newsImageView)
+        contentView.addSubview(categoryLabel)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(containerView)
+        contentView.addSubview(descriptionLabel)
+       
         containerView.addSubview(authorImage)
         containerView.addSubview(authorLabel)
         containerView.addSubview(sourceAndDateLabel)
+        
+        view.addSubview(readMoreButton)
         navigationItem.rightBarButtonItem = bookmarkButton
         
     }
@@ -139,24 +158,35 @@ class HomeDetailController: BaseController {
         super.configureConstraints()
         NSLayoutConstraint.activate([
             
-            newsImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            newsImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            newsImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            newsImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            newsImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            newsImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             newsImageView.heightAnchor.constraint(equalToConstant: 240),
             
             categoryLabel.topAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: 20),
-            categoryLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            categoryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             categoryLabel.heightAnchor.constraint(equalToConstant: 24),
             categoryLabel.widthAnchor.constraint(equalToConstant: 100),
             
             titleLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
             
             containerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
 //            containerView.heightAnchor.constraint(equalToConstant: 60),
             
             authorImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
@@ -174,13 +204,14 @@ class HomeDetailController: BaseController {
             sourceAndDateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
             
             descriptionLabel.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 12),
-            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -120),
             
             readMoreButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             readMoreButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             readMoreButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readMoreButton.heightAnchor.constraint(equalToConstant: 40)
+            readMoreButton.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
     func configureData() {
