@@ -57,6 +57,7 @@ class HomeController: BaseController {
     override func configureUI() {
         view.addSubview(categoryCollection)
         view.addSubview(table)
+        configureSearchItem()
         categoryCollection.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
 //        categoryCollection.scrollIndicatorInsets = categoryCollection.contentInset
     }
@@ -84,6 +85,21 @@ class HomeController: BaseController {
             table.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             table.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
+    }
+    
+    func configureSearchItem() {
+        let searchItem = UIBarButtonItem(
+            image: UIImage(systemName: "magnifyingglass"),
+            style: .plain,
+            target: self,
+            action: #selector(handleSearch)
+        )
+        navigationItem.rightBarButtonItem = searchItem
+    }
+    
+    @objc private func handleSearch() {
+        let vc = SearchController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

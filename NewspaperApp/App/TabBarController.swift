@@ -23,12 +23,16 @@ class TabBarController: UITabBarController {
                                    tag: 0)
         let popularcontroller = PopularController(viewModel: .init(useCase: PopularManager()))
         let popularNav = UINavigationController(rootViewController: popularcontroller)
-        popularNav.tabBarItem = .init(title: "Popular", image: UIImage(systemName: "flame"), tag: 1)
+        popularNav.tabBarItem = .init(title: "Popular", image: UIImage(systemName: "flame"), tag: 2)
         
         let bookmarkController = BookmarkController()
         let bookNav = UINavigationController(rootViewController: bookmarkController)
-        bookNav.tabBarItem = .init(title: "Bookmark", image: UIImage(systemName: "bookmark"), tag: 2)
-        viewControllers = [homeNav, popularNav, bookNav]
+        bookNav.tabBarItem = .init(title: "Bookmark", image: UIImage(systemName: "bookmark"), tag: 3)
+        
+        let searchController = SearchController()
+        let searchNav = UINavigationController(rootViewController: searchController)
+        searchNav.tabBarItem = .init(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
+        viewControllers = [homeNav, searchNav, popularNav, bookNav]
     }
     
     private func configureUI() {
