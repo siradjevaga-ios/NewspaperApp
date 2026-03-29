@@ -15,6 +15,7 @@ class SearchController: BaseController {
         search.searchBar.placeholder = "Search news, topics and more"
         return search
     }()
+    
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.alwaysBounceVertical = true
@@ -63,11 +64,11 @@ class SearchController: BaseController {
     }()
     
     private lazy var trendingCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = LeftAlignedFlowLayout()
         layout.minimumLineSpacing = 8
         layout.minimumInteritemSpacing = 8
         layout.scrollDirection = .vertical
-        
+    
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.delegate = self
         collection.dataSource = self
@@ -97,12 +98,27 @@ class SearchController: BaseController {
         return l
     }()
     
+    private lazy var resultsTable: UITableView = {
+        let t = UITableView(frame: .zero, style: .plain)
+        t.translatesAutoresizingMaskIntoConstraints = false
+        t.delegate = self
+        t.dataSource = self
+        t.showsVerticalScrollIndicator = false
+        t.register(UITableViewCell.self, forCellReuseIdentifier: "resultCell")
+        t.isHidden = true
+        return t
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchBar.delegate = self
     }
     
     override func configureUI() {
         super.configureUI()
+        view.addSubview(resultsTable)
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addArrangedSubview(recentHeaderLabel)
@@ -117,13 +133,18 @@ class SearchController: BaseController {
         super.configureConstraints()
         
         NSLayoutConstraint.activate([
+            resultsTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            resultsTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            resultsTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            resultsTable.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 12),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
@@ -137,18 +158,28 @@ class SearchController: BaseController {
     }
 }
 
-extension SearchController: TableConfigure, CollectionConfigure  {
+extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDelegate  {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        recentSearches.count
+        if tableView == resultsTable {
+            return 5
+        } else {
+            return recentSearches.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
-        cell.textLabel?.text = recentSearches[indexPath.row]
-        cell.imageView?.image = UIImage(systemName: "clock.arrow.circlepath")
-        cell.imageView?.tintColor = .gray
-        cell.selectionStyle = .none
-        return cell
+        if tableView == resultsTable {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "resultCell", for: indexPath)
+            cell.textLabel?.text = "Result"
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
+            cell.textLabel?.text = recentSearches[indexPath.row]
+            cell.imageView?.image = UIImage(systemName: "clock.arrow.circlepath")
+            cell.imageView?.tintColor = .gray
+            cell.selectionStyle = .none
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -168,14 +199,6 @@ extension SearchController: TableConfigure, CollectionConfigure  {
         return cell
     }
     
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let text = topics[indexPath.row]
-//        let font = UIFont.systemFont(ofSize: 14, weight: .medium)
-//        let textWidth = text.size(withAttributes: [.font: font]).width
-//        let totalWidth = textWidth + 60
-//        return CGSize(width: totalWidth, height: 36)
-//    }
-    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -184,5 +207,33 @@ extension SearchController: TableConfigure, CollectionConfigure  {
         let width = text.size(withAttributes: [.font: UIFont.systemFont(ofSize: 14)]).width
         
         return CGSize(width: width + 40, height: 32)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        recentHeaderLabel.isHidden = true
+        table.isHidden = true
+        trendingHeaderLabel.isHidden = true
+        trendingCollectionView.isHidden = true
+        exploreIcon.isHidden = true
+        exploreLabel.isHidden = true
+        
+        resultsTable.isHidden = false
+        scrollView.isHidden = true
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        recentHeaderLabel.isHidden = false
+        table.isHidden = false
+        trendingHeaderLabel.isHidden = false
+        trendingCollectionView.isHidden = false
+        exploreIcon.isHidden = false
+        exploreLabel.isHidden = false
+        
+        resultsTable.isHidden = true
+        scrollView.isHidden = false
     }
 }
