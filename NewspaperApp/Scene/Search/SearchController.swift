@@ -52,9 +52,6 @@ class SearchController: BaseController {
         return t
     }()
     
-    private var recentSearches = ["Artificial intelegence in 2026", "Trump", "World Cup 2026"]
-    private var topics = ["#GlobalWarming", "#AI_Revolution", "#WorldCup", "#Crypto", "#HealthTech", "#SpaceX"]
-    
     private let trendingHeaderLabel: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
@@ -108,6 +105,17 @@ class SearchController: BaseController {
         t.isHidden = true
         return t
     }()
+    
+    private let viewModel: SearchViewModel
+    
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,18 +171,20 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
         if tableView == resultsTable {
             return 5
         } else {
-            return recentSearches.count
+            return viewModel.numberOfSearches()
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == resultsTable {
             let cell = tableView.dequeueReusableCell(withIdentifier: "resultCell", for: indexPath)
-            cell.textLabel?.text = "Result"
+            let searchText = searchController.searchBar.text ?? ""
+            cell.textLabel?.text = "Looking for \(searchText)"
+            cell.imageView?.image = UIImage(systemName: "magnifyingglass")
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
-            cell.textLabel?.text = recentSearches[indexPath.row]
+            cell.textLabel?.text = viewModel.addRecentSearches(at: indexPath.row)
             cell.imageView?.image = UIImage(systemName: "clock.arrow.circlepath")
             cell.imageView?.tintColor = .gray
             cell.selectionStyle = .none
@@ -184,18 +194,18 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            recentSearches.remove(at: indexPath.row)
+            viewModel.removeRecentSearch(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        topics.count
+        viewModel.numberOfTopics()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrendingCell", for: indexPath) as! TrendingCell
-        cell.titleLabel.text = topics[indexPath.row]
+        cell.titleLabel.text = viewModel.addTopics(at: indexPath.item)
         return cell
     }
     
@@ -203,7 +213,7 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let text = topics[indexPath.item]
+        let text = viewModel.addTopics(at: indexPath.item)
         let width = text.size(withAttributes: [.font: UIFont.systemFont(ofSize: 14)]).width
         
         return CGSize(width: width + 40, height: 32)
@@ -226,6 +236,10 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        
         recentHeaderLabel.isHidden = false
         table.isHidden = false
         trendingHeaderLabel.isHidden = false
@@ -235,5 +249,12 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
         
         resultsTable.isHidden = true
         scrollView.isHidden = false
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        resultsTable.reloadData()
+        if searchText.isEmpty {
+            print("yazı yoxdur")
+        }
     }
 }

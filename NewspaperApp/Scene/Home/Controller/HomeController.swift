@@ -98,7 +98,9 @@ class HomeController: BaseController {
     }
     
     @objc private func handleSearch() {
-        let vc = SearchController()
+        let useCase = SearchManager()
+        let viewModel = SearchViewModel(useCase: useCase)
+        let vc = SearchController(viewModel: viewModel)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

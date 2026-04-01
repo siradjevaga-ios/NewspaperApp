@@ -29,7 +29,7 @@ class TabBarController: UITabBarController {
         let bookNav = UINavigationController(rootViewController: bookmarkController)
         bookNav.tabBarItem = .init(title: "Bookmark", image: UIImage(systemName: "bookmark"), tag: 3)
         
-        let searchController = SearchController()
+        let searchController = SearchController(viewModel: .init(useCase: SearchManager()))
         let searchNav = UINavigationController(rootViewController: searchController)
         searchNav.tabBarItem = .init(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
         viewControllers = [homeNav, searchNav, popularNav, bookNav]

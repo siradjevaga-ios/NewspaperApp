@@ -10,7 +10,7 @@ import Foundation
 final class HomeViewModel {
     var articles = [Article]()
     
-    private let useCase: HomeUseCase
+    private(set) var useCase: HomeUseCase
     
     var error: ((String) -> Void)?
     var success: (() -> Void)?
