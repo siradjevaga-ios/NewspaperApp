@@ -164,12 +164,23 @@ class SearchController: BaseController {
             exploreIcon.widthAnchor.constraint(equalToConstant: 148)
         ])
     }
+    
+    override func configureViewModel() {
+        viewModel.success = { [weak self] in
+            DispatchQueue.main.async {
+                self?.resultsTable.reloadData()
+            }
+        }
+        viewModel.error = { message in
+            print(message)
+        }
+    }
 }
 
 extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDelegate  {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == resultsTable {
-            return 5
+            return viewModel.showNumberOfResults()
         } else {
             return viewModel.numberOfSearches()
         }
@@ -178,9 +189,10 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == resultsTable {
             let cell = tableView.dequeueReusableCell(withIdentifier: "resultCell", for: indexPath)
-            let searchText = searchController.searchBar.text ?? ""
-            cell.textLabel?.text = "Looking for \(searchText)"
-            cell.imageView?.image = UIImage(systemName: "magnifyingglass")
+//            let searchText = searchController.searchBar.text ?? ""
+            let article = viewModel.showResults(at: indexPath.item)
+            cell.textLabel?.text = article.title
+            cell.imageView?.image = UIImage(systemName: "doc.text.fill")
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
@@ -189,6 +201,15 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
             cell.imageView?.tintColor = .gray
             cell.selectionStyle = .none
             return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView == resultsTable {
+            let detailVC = HomeDetailController()
+            let selectedNews = viewModel.showResults(at: indexPath.item)
+            detailVC.article = selectedNews
+            navigationController?.pushViewController(detailVC, animated: true)
         }
     }
     
@@ -232,6 +253,8 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text, !text.isEmpty  else { return }
+        viewModel.search(text: text)
         searchBar.resignFirstResponder()
     }
     

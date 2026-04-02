@@ -11,6 +11,13 @@ class SearchManager: SearchUseCase {
     func getSearch(query: String, completion: @escaping (NewsResponse?, String?) -> Void) {
         let urlString = "https://newsapi.org/v2/everything?q=\(query)&apiKey=0520b54b340441f28174ba6afe5742ef"
         completion(nil, nil)
-//        NetworkManager.shared
+        NetworkManager.shared.fetch(url: urlString) { (result: Result<NewsResponse, Error>) in
+            switch result {
+            case .success(let data):
+                completion(data, nil)
+            case .failure(let error):
+                completion(nil, error.localizedDescription)
+            }
+        }
     }
 }

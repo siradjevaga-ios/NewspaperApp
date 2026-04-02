@@ -8,6 +8,10 @@
 import Foundation
 
 final class SearchViewModel {
+    var searchResults = [Article]()
+    var error: ((String) -> Void)?
+    var success: (() -> Void)?
+    
     private let useCase: SearchUseCase
     
     init (useCase: SearchUseCase) {
@@ -34,6 +38,25 @@ final class SearchViewModel {
     
     func removeRecentSearch(at index: Int) {
         recentSearches.remove(at: index)
+    }
+    
+    func search(text: String) {
+        useCase.getSearch(query: text) { [weak self] data, errorMessage in
+            if let errorMessage {
+                self?.error?(errorMessage)
+            } else if let data {
+                self?.searchResults = data.articles ?? []
+                self?.success?()
+            }
+        }
+    }
+    
+    func showNumberOfResults() -> Int {
+        return searchResults.count
+    }
+    
+    func showResults(at index: Int) -> Article {
+        return searchResults[index]
     }
 }
 

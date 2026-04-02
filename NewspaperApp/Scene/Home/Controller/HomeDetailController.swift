@@ -110,7 +110,6 @@ class HomeDetailController: BaseController {
         return b
     }()
     
-    
     private lazy var bookmarkButton: UIBarButtonItem = {
         let bookmark = UIBarButtonItem(
             image: UIImage(systemName: "bookmark"),
@@ -120,19 +119,16 @@ class HomeDetailController: BaseController {
         bookmark.tintColor = .systemBlue
         return bookmark
     }()
-    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        configureData()
+    }
     
     @objc
     private func bookmarkTapped() {
         let isFilled = bookmarkButton.image == UIImage(systemName: "bookmark.fill")
         bookmarkButton.image = UIImage(systemName: isFilled ? "bookmark" : "bookmark.fill")
-    }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configureData()
     }
     
     override func configureUI() {
