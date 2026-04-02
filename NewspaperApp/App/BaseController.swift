@@ -23,4 +23,11 @@ class BaseController: UIViewController {
     func configureViewModel() {}
     
     func configureConstraints() {}
+    
+    func showAlert(title: String = "Error", message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default)
+            alert.addAction(okAction)
+            self.present(alert, animated: true)
+        }
 }

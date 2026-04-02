@@ -104,6 +104,7 @@ class RegisterController: BaseController {
         b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         b.heightAnchor.constraint(equalToConstant: 44).isActive = true
         b.translatesAutoresizingMaskIntoConstraints = false
+        b.addTarget(self, action: #selector(handleSignUpRequest), for: .touchUpInside)
         return b
     }()
     
@@ -195,13 +196,21 @@ class RegisterController: BaseController {
         return button
     }()
     
-    @objc func handleBackToLogin() {
-        navigationController?.popViewController(animated: true)
-    }
+    private let viewModel = RegisterViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+    }
+    
+    @objc private func handleSignUpRequest() {
+        let email = emailTextField.text
+        let password = passwordTextField.text
+        viewModel.register(email: email, password: password)
+    }
+    
+    @objc func handleBackToLogin() {
+        navigationController?.popViewController(animated: true)
     }
     
     override func configureUI() {
@@ -216,5 +225,14 @@ class RegisterController: BaseController {
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+    }
+    override func configureViewModel() {
+        viewModel.success = { [weak self] in
+            print("Successfuly completed")
+            self?.showAlert(title: "Success", message: "You can sign in")
+        }
+        viewModel.error = { [weak self] errorMessage in
+            self?.showAlert(message: errorMessage)
+        }
     }
 }

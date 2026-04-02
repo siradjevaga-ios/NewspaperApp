@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
         private func setRootController(windowScene: UIWindowScene) {
             window = UIWindow(windowScene: windowScene)
-            window?.rootViewController = TabBarController()/*UINavigationController(rootViewController: LoginController())*/
+            window?.rootViewController = UINavigationController(rootViewController: LoginController())
             window?.makeKeyAndVisible()
         }
 //        window = UIWindow(windowScene: windowScene)

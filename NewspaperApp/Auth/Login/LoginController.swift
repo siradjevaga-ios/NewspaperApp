@@ -94,6 +94,7 @@ class LoginController: BaseController {
         b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         b.heightAnchor.constraint(equalToConstant: 44).isActive = true
         b.translatesAutoresizingMaskIntoConstraints = false
+        b.addTarget(self, action: #selector(handleLoginRequest), for: .touchUpInside)
         return b
     }()
     
@@ -185,13 +186,19 @@ class LoginController: BaseController {
         return button
     }()
     
-    @objc func handleSignUp() {
-        let vc = RegisterController()
-        navigationController?.pushViewController(vc, animated: true)
-    }
+    private let viewModel = LoginViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    @objc private func handleLoginRequest() {
+        viewModel.login(email: emailTextField.text, pass: passwordTextField.text)
+    }
+    
+    @objc func handleSignUp() {
+        let vc = RegisterController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     override func configureUI() {
@@ -207,5 +214,14 @@ class LoginController: BaseController {
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+    }
+    
+    override func configureViewModel() {
+        viewModel.success = { [weak self] in
+            print("Success!")
+        }
+        viewModel.error = { [weak self] errorMessage in
+            self?.showAlert(message: errorMessage)
+        }
     }
 }
