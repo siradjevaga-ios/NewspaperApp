@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import SafariServices
 
 class HomeDetailController: BaseController {
     var article: Article?
@@ -107,6 +108,7 @@ class HomeDetailController: BaseController {
         b.backgroundColor = .systemBlue
         b.layer.cornerRadius = 12
         b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        b.addTarget(self, action: #selector(openFullArticle), for: .touchUpInside)
         return b
     }()
     
@@ -123,6 +125,16 @@ class HomeDetailController: BaseController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configureData()
+    }
+    
+    @objc func openFullArticle() {
+        guard let urlString = article?.url,
+              let url = URL(string: urlString)  else {
+            print("Xəbərin linki tapılmadı")
+            return
+        }
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true, completion: nil)
     }
     
     @objc
@@ -215,7 +227,7 @@ class HomeDetailController: BaseController {
         titleLabel.text = article.title
         descriptionLabel.text = article.description
         authorLabel.text = article.author ?? "Unknown Author"
-        categoryLabel.text = categoryName?.uppercased() ?? "GENERAl"
+        categoryLabel.text = categoryName?.uppercased() ?? "GENERAL"
         
         let source = article.source?.name ?? "Source"
         let date = article.publishedAt?.setRelativeTime() ?? ""
