@@ -121,6 +121,7 @@ class HomeDetailController: BaseController {
         bookmark.tintColor = .systemBlue
         return bookmark
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground

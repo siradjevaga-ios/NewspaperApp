@@ -58,9 +58,9 @@ class HomeController: BaseController {
     override func configureUI() {
         view.addSubview(categoryCollection)
         view.addSubview(table)
-        configureSearchItem()
+        configureNavItems()
         categoryCollection.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-//        categoryCollection.scrollIndicatorInsets = categoryCollection.contentInset
+        
     }
     
     override func configureViewModel() {
@@ -69,8 +69,14 @@ class HomeController: BaseController {
             print("Xeberler geldi. Meqalelerin sayi: \(self?.viewModel.articles.count ?? 0)")
             self?.table.reloadData()
         }
-        viewModel.error = { errorMessage in
+        viewModel.error = { [weak self] errorMessage in
             print(errorMessage)
+        }
+        
+        viewModel.onLogoutSuccess = { [weak self] in
+            if let sceneDelegate = self?.view.window?.windowScene?.delegate as? SceneDelegate {
+                sceneDelegate.goToLoginPage()
+            }
         }
     }
     override func configureConstraints() {
@@ -88,14 +94,29 @@ class HomeController: BaseController {
         ])
     }
     
-    func configureSearchItem() {
+    func configureNavItems() {
         let searchItem = UIBarButtonItem(
             image: UIImage(systemName: "magnifyingglass"),
             style: .plain,
             target: self,
             action: #selector(handleSearch)
         )
+        searchItem.tintColor = .systemBlue
         navigationItem.rightBarButtonItem = searchItem
+        
+        let logoutItem = UIBarButtonItem(
+            image: UIImage(systemName: "rectangle.portrait.and.arrow.right"),
+            style: .plain,
+            target: self,
+            action: #selector(handleLogout)
+        )
+        logoutItem.tintColor = .systemBlue
+        
+        navigationItem.rightBarButtonItems = [logoutItem, searchItem]
+    }
+    
+    @objc private func handleLogout() {
+        viewModel.logout()
     }
     
     @objc private func handleSearch() {
@@ -146,6 +167,7 @@ extension HomeController: TableConfigure, CollectionConfigure {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = HomeDetailController()
+        controller.hidesBottomBarWhenPushed = true
         controller.article = viewModel.articles[indexPath.row]
         controller.categoryName = selectedCategory
         navigationController?.pushViewController(controller, animated: true)

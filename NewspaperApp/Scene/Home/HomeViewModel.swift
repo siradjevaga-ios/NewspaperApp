@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 final class HomeViewModel {
     var articles = [Article]()
@@ -14,6 +15,8 @@ final class HomeViewModel {
     
     var error: ((String) -> Void)?
     var success: (() -> Void)?
+    
+    var onLogoutSuccess: (() -> Void)?
     
     init(useCase: HomeUseCase) {
         self.useCase = useCase
@@ -28,6 +31,14 @@ final class HomeViewModel {
                 self?.articles = data.articles ?? []
                 self?.success?()
             }
+        }
+    }
+    func logout() {
+        do {
+            try FirebaseAuth.Auth.auth().signOut()
+            onLogoutSuccess?()
+        } catch {
+            self.error?(error.localizedDescription)
         }
     }
 }

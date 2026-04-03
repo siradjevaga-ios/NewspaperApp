@@ -262,6 +262,9 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
         
         searchBar.text = ""
         searchBar.resignFirstResponder()
+        viewModel.searchResults.removeAll()
+        resultsTable.reloadData()
+        table.reloadData()
         
         recentHeaderLabel.isHidden = false
         table.isHidden = false

@@ -56,7 +56,10 @@ final class SearchViewModel {
     }
     
     func showResults(at index: Int) -> Article {
-        return searchResults[index]
+        if index < searchResults.count {
+            return searchResults[index]
+        }
+       return Article(source: nil, author: nil, title: "Unknown", description: nil, url: nil, urlToImage: nil, publishedAt: nil, content: nil)
     }
 }
 
