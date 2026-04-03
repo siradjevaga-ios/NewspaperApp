@@ -23,4 +23,7 @@ class AuthManager: AuthUseCase {
             completion(error)
         }
     }
+    func signOut() throws {
+        try Auth.auth().signOut()
+    }
 }

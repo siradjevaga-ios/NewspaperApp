@@ -53,6 +53,7 @@ class HomeController: BaseController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "The Readline"
     }
     override func configureUI() {
         view.addSubview(categoryCollection)
