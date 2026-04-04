@@ -27,7 +27,9 @@ class RegisterViewModel {
             if let error = firebaseError {
                 self?.error?(error.localizedDescription)
             } else {
-                self?.success?()
+                DispatchQueue.main.async {
+                    self?.success?()
+                }
             }
         }
     }

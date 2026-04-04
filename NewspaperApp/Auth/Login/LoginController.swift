@@ -186,7 +186,10 @@ class LoginController: BaseController {
         return button
     }()
     
-    private let viewModel = LoginViewModel()
+    private let viewModel: LoginViewModel = {
+        let vm = LoginViewModel(useCase: AuthManager.shared)
+        return vm
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -219,7 +222,9 @@ class LoginController: BaseController {
     
     override func configureViewModel() {
         viewModel.success = { [weak self] in
-            print("Success!")
+            if let sceneDelegate = self?.view.window?.windowScene?.delegate as? SceneDelegate {
+                sceneDelegate.goToHomePage()
+            }
         }
         viewModel.error = { [weak self] errorMessage in
             self?.showAlert(message: errorMessage)

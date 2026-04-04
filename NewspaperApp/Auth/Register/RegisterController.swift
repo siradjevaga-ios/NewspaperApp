@@ -228,8 +228,7 @@ class RegisterController: BaseController {
     }
     override func configureViewModel() {
         viewModel.success = { [weak self] in
-            print("Successfuly completed")
-            self?.showAlert(title: "Success", message: "You can sign in")
+            self?.navigationController?.popViewController(animated: true)
         }
         viewModel.error = { [weak self] errorMessage in
             self?.showAlert(message: errorMessage)
