@@ -194,6 +194,7 @@ class LoginController: BaseController {
     
     @objc private func handleLoginRequest() {
         viewModel.login(email: emailTextField.text, pass: passwordTextField.text)
+        
     }
     
     @objc func handleSignUp() {

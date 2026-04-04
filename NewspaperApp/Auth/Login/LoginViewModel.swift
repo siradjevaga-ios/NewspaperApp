@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Foundation
 
 class LoginViewModel {
+    
     private let useCase: AuthUseCase
     
     var success: (() -> Void)?
@@ -19,7 +19,8 @@ class LoginViewModel {
     }
     func login(email: String?, pass: String?) {
         guard let email = email, !email.isEmpty,
-              let pass = pass, !pass.isEmpty else {
+              let pass = pass, !pass.isEmpty
+        else {
             self.error?("error")
             return
         }
@@ -27,7 +28,9 @@ class LoginViewModel {
             if let error = firebaseError {
                 self?.error?(error.localizedDescription)
             } else {
-                self?.success?()
+                DispatchQueue.main.async {
+                    self?.success?()
+                }
             }
         }
     }
