@@ -206,7 +206,7 @@ extension SearchController: TableConfigure, CollectionConfigure, UISearchBarDele
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == resultsTable {
-            let detailVC = HomeDetailController()
+            let detailVC = NewsDetailController(viewModel: .init(useCase: BookMarkManager()))
             let selectedNews = viewModel.showResults(at: indexPath.item)
             detailVC.article = selectedNews
             navigationController?.pushViewController(detailVC, animated: true)

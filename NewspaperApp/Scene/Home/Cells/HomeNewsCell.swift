@@ -64,6 +64,18 @@ class HomeNewsCell: UITableViewCell {
         return stack
     }()
     
+     lazy var bookmarkButton: UIButton = {
+        let b = UIButton(type: .system)
+        b.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+        b.tintColor = .systemBlue
+        b.backgroundColor = .white.withAlphaComponent(0.8)
+        b.layer.cornerRadius = 15
+        b.translatesAutoresizingMaskIntoConstraints = false
+        b.isHidden = true
+        b.isUserInteractionEnabled = true
+        return b
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -81,6 +93,8 @@ class HomeNewsCell: UITableViewCell {
         infoStackView.addArrangedSubview(timeLabel)
         contentView.addSubview(titleLabel)
         contentView.addSubview(descriptionLabel)
+        contentView.addSubview(bookmarkButton)
+        contentView.bringSubviewToFront(bookmarkButton)
         configureConstraints()
     }
     
@@ -90,6 +104,11 @@ class HomeNewsCell: UITableViewCell {
             newsImageVieW.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             newsImageVieW.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             newsImageVieW.heightAnchor.constraint(equalToConstant: 200),
+            
+            bookmarkButton.topAnchor.constraint(equalTo: newsImageVieW.topAnchor, constant: 8),
+            bookmarkButton.trailingAnchor.constraint(equalTo: newsImageVieW.trailingAnchor, constant: -8),
+            bookmarkButton.widthAnchor.constraint(equalToConstant: 30),
+            bookmarkButton.heightAnchor.constraint(equalToConstant: 30),
             
             categoryLabel.heightAnchor.constraint(equalToConstant: 24),
             
@@ -115,6 +134,12 @@ class HomeNewsCell: UITableViewCell {
         
         if let urlString = item.urlToImage, let url = URL(string: urlString) {
             newsImageVieW.kf.setImage(with: url, placeholder: UIImage(named: "placeholder"))
+        }
+        
+        if category == "Saved" {
+            bookmarkButton.isHidden = false
+        } else {
+            bookmarkButton.isHidden = true
         }
     }
 }

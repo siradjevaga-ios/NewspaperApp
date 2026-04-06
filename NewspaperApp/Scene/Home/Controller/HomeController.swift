@@ -166,7 +166,7 @@ extension HomeController: TableConfigure, CollectionConfigure {
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let controller = HomeDetailController()
+        let controller = NewsDetailController(viewModel: .init(useCase: BookMarkManager()))
         controller.hidesBottomBarWhenPushed = true
         controller.article = viewModel.articles[indexPath.row]
         controller.categoryName = selectedCategory

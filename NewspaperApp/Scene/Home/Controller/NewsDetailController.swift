@@ -9,9 +9,7 @@ import UIKit
 import Kingfisher
 import SafariServices
 
-class HomeDetailController: BaseController {
-    var article: Article?
-    var categoryName: String?
+class NewsDetailController: BaseController {
     
     private let scrollView: UIScrollView = {
        let s = UIScrollView()
@@ -122,16 +120,38 @@ class HomeDetailController: BaseController {
         return bookmark
     }()
     
+    var article: Article?
+    var categoryName: String?
+    private let viewModel: BookmarkViewModel
+    
+    init(viewModel: BookmarkViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configureData()
+        checkBookmarkStatus()
+    }
+    
+    private func checkBookmarkStatus() {
+        guard let articleID = article?.title else { return }
+            viewModel.checkBookmarkStatus(articleID: articleID) { [weak self] isBookmarked in
+            let imageName = isBookmarked ? "bookmark.fill" : "bookmark"
+            self?.bookmarkButton.image = UIImage(systemName: imageName)
+        }
     }
     
     @objc func openFullArticle() {
         guard let urlString = article?.url,
               let url = URL(string: urlString)  else {
-            print("Xəbərin linki tapılmadı")
+            print("link tapilmadi")
             return
         }
         let safariVC = SFSafariViewController(url: url)
@@ -140,8 +160,19 @@ class HomeDetailController: BaseController {
     
     @objc
     private func bookmarkTapped() {
-        let isFilled = bookmarkButton.image == UIImage(systemName: "bookmark.fill")
-        bookmarkButton.image = UIImage(systemName: isFilled ? "bookmark" : "bookmark.fill")
+        guard let article = article else { return }
+        bookmarkButton.isEnabled = false
+        viewModel.toggleBookmark(article: article) { [weak self] error in
+            DispatchQueue.main.async {
+                self?.bookmarkButton.isEnabled = true
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                let isCurrentlyFilled = self?.bookmarkButton.image == UIImage(systemName: "bookmark.fill")
+                self?.bookmarkButton.image = UIImage(systemName: isCurrentlyFilled ? "bookmark" : "bookmark.fill")
+            }
+        }
     }
     
     override func configureUI() {

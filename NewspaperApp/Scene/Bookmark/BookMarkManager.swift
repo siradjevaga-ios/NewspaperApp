@@ -15,8 +15,13 @@ class BookMarkManager: BookmarkUseCase {
     private var userID: String? { Auth.auth().currentUser?.uid }
     
     func addToBookmarks(article: Article, completion: @escaping (Error?) -> Void) {
-        guard let uid = userID else { return }
-        let docID = article.title ?? "Unknown Title"
+        guard let uid = userID else { completion(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged in"]))
+            return
+        }
+        let docID = (article.title ?? "Unknown")
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ".", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
         db.collection(collectionName).document(uid).collection("user_bookmarks").document(docID).setData([
             "title": article.title ?? "",
             "description": article.description ?? "",
@@ -30,7 +35,8 @@ class BookMarkManager: BookmarkUseCase {
     
     func removeFromBookmarks(articleID: String, completion: @escaping (Error?) -> Void) {
         guard let uid = userID else { return }
-        db.collection(collectionName).document(uid).collection("user_bookmarks").document(articleID).delete { error in
+        let safeDocID = articleID.replacingOccurrences(of: "/", with: "-")
+        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).delete { error in
             completion(error)
         }
     }
@@ -39,7 +45,8 @@ class BookMarkManager: BookmarkUseCase {
             completion(false)
             return
         }
-        db.collection(collectionName).document(uid).collection("user_bookmarks").document(articleID).getDocument { (document, error) in
+        let safeDocID = articleID.replacingOccurrences(of: "/", with: "-")
+        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).getDocument { (document, error) in
             if let document = document, document.exists {
                 completion(true)
             } else {

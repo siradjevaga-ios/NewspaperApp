@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BookmarViewModel {
+class BookmarkViewModel {
     private let useCase: BookmarkUseCase
     var bookmarks = [Article]()
     
@@ -15,7 +15,7 @@ class BookmarViewModel {
         self.useCase = useCase
     }
     
-    func fethBookmarks(completion: @escaping(String?) -> Void) {
+    func fetchBookmarks(completion: @escaping(String?) -> Void) {
         useCase.getBookmarks { [weak self]  downloadedArticles, error in
             if let error {
                 completion(error.localizedDescription)
@@ -30,6 +30,17 @@ class BookmarViewModel {
     
     func toggleBookmark(article: Article, completion: @escaping (Error?) -> Void) {
         let articleID = article.title ?? ""
-        
+        useCase.isBookmarked(articleID: articleID) { [weak self] exists in
+            if exists {
+                self?.useCase.removeFromBookmarks(articleID: articleID, completion: completion)
+            } else {
+                self?.useCase.addToBookmarks(article: article, completion: completion)
+            }
+        }
+    }
+    
+    func checkBookmarkStatus(articleID: String, completion: @escaping (Bool) -> Void) {
+        useCase.isBookmarked(articleID: articleID, completion: completion)
     }
 }
+
