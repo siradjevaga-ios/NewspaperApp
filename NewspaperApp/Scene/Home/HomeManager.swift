@@ -8,7 +8,8 @@
 import Foundation
 
 class HomeManager: HomeUseCase {
-    func getNews(category: String, completion: @escaping (NewsResponse?, String?) -> Void) {
+    func getNews(category: String, page: Int, completion: @escaping (NewsResponse?, String?) -> Void) {
+        
         let url = "https://newsapi.org/v2/top-headlines?country=us&category=\(category)&apiKey=0520b54b340441f28174ba6afe5742ef"
         NetworkManager.shared.fetch(url: url) { (result: Result<NewsResponse, Error>) in
             switch result {

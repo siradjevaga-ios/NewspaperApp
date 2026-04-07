@@ -141,19 +141,14 @@ extension BookmarkController: TableConfigure {
         let index = sender.tag
         guard index < viewModel.bookmarks.count else { return }
         let article = viewModel.bookmarks[index]
-        let currentImage = sender.image(for: .normal)
-        let isCurrentlyFilled = currentImage == UIImage(systemName: "bookmark.fill")
-        let newIcon = isCurrentlyFilled ? "bookmark" : "bookmark.fill"
-        sender.setImage(UIImage(systemName: newIcon), for: .normal)
+        
         viewModel.toggleBookmark(article: article) { [weak self] error in
             if let error {
                 print(error.localizedDescription)
-                DispatchQueue.main.async {
-                    sender.setImage(currentImage, for: .normal)
-                }
                 return
             }
         }
+        sender.setImage(UIImage(systemName: "bookmark"), for: .normal)
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = NewsDetailController(viewModel: .init(useCase: BookMarkManager()))

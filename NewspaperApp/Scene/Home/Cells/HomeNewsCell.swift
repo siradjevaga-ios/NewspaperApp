@@ -137,9 +137,11 @@ class HomeNewsCell: UITableViewCell {
         }
         
         if category == "Saved" {
-            bookmarkButton.isHidden = false
-        } else {
-            bookmarkButton.isHidden = true
-        }
+                bookmarkButton.isHidden = false
+                bookmarkButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+            } else {
+                bookmarkButton.isHidden = true
+                bookmarkButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
+            }
     }
 }

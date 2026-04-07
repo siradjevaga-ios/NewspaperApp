@@ -14,44 +14,42 @@ class BookMarkManager: BookmarkUseCase {
     private let collectionName = "bookmarks"
     private var userID: String? { Auth.auth().currentUser?.uid }
     
-    func addToBookmarks(article: Article, completion: @escaping (Error?) -> Void) {
-        guard let uid = userID else { completion(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged in"]))
-            return
-        }
-        let docID = (article.title ?? "Unknown")
+    private func getSafeDocID(_ title: String) -> String {
+        return title
             .replacingOccurrences(of: "/", with: "-")
             .replacingOccurrences(of: ".", with: "-")
             .replacingOccurrences(of: ":", with: "-")
+    }
+    
+    func addToBookmarks(article: Article, completion: @escaping (Error?) -> Void) {
+        guard let uid = userID else { return }
+        let docID = getSafeDocID(article.title ?? "Unknown")
+        
         db.collection(collectionName).document(uid).collection("user_bookmarks").document(docID).setData([
             "title": article.title ?? "",
             "description": article.description ?? "",
             "urlToImage": article.urlToImage ?? "",
             "url": article.url ?? "",
             "publishedAt": article.publishedAt ?? ""
-        ]) { error in
-            completion(error)
-        }
+        ], completion: completion)
     }
     
     func removeFromBookmarks(articleID: String, completion: @escaping (Error?) -> Void) {
         guard let uid = userID else { return }
-        let safeDocID = articleID.replacingOccurrences(of: "/", with: "-")
-        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).delete { error in
-            completion(error)
-        }
+        let safeDocID = getSafeDocID(articleID) // Düzəliş burada
+        
+        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).delete(completion: completion)
     }
+    
     func isBookmarked(articleID: String, completion: @escaping (Bool) -> Void) {
         guard let uid = userID else {
             completion(false)
             return
         }
-        let safeDocID = articleID.replacingOccurrences(of: "/", with: "-")
-        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).getDocument { (document, error) in
-            if let document = document, document.exists {
-                completion(true)
-            } else {
-                completion(false)
-            }
+        let safeDocID = getSafeDocID(articleID)
+        
+        db.collection(collectionName).document(uid).collection("user_bookmarks").document(safeDocID).getDocument { (document, _) in
+            completion(document?.exists ?? false)
         }
     }
     

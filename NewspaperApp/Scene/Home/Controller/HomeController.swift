@@ -12,7 +12,6 @@ class HomeController: BaseController {
     private lazy var categoryCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.dataSource = self
         cv.delegate = self
@@ -20,7 +19,6 @@ class HomeController: BaseController {
         cv.backgroundColor = .clear
         cv.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
         cv.showsHorizontalScrollIndicator = false
-        
         return cv
     }()
     
@@ -38,49 +36,44 @@ class HomeController: BaseController {
     }()
     
     private let viewModel: HomeViewModel
-    
     private var selectedCategory: String = "General"
-    
     private var selectedCategoryIndex: Int = 0
-
+    
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
+    required init?(coder: NSCoder) { fatalError() }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "The Readline"
     }
+    
     override func configureUI() {
         view.addSubview(categoryCollection)
         view.addSubview(table)
         configureNavItems()
         categoryCollection.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        
     }
     
     override func configureViewModel() {
         viewModel.getNewsList()
         viewModel.success = { [weak self] in
-            print("Xeberler geldi. Meqalelerin sayi: \(self?.viewModel.articles.count ?? 0)")
-            self?.table.reloadData()
+            DispatchQueue.main.async {
+                self?.table.reloadData()
+            }
         }
-        viewModel.error = { [weak self] errorMessage in
-            print(errorMessage)
-        }
-        
+        viewModel.error = { print($0) }
         viewModel.onLogoutSuccess = { [weak self] in
             if let sceneDelegate = self?.view.window?.windowScene?.delegate as? SceneDelegate {
                 sceneDelegate.goToLoginPage()
             }
         }
     }
+    
     override func configureConstraints() {
-        
         NSLayoutConstraint.activate([
             categoryCollection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             categoryCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -89,62 +82,34 @@ class HomeController: BaseController {
             
             table.topAnchor.constraint(equalTo: categoryCollection.bottomAnchor, constant: 12),
             table.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            table.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            table.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            table.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            table.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
     func configureNavItems() {
-        let searchItem = UIBarButtonItem(
-            image: UIImage(systemName: "magnifyingglass"),
-            style: .plain,
-            target: self,
-            action: #selector(handleSearch)
-        )
-        searchItem.tintColor = .systemBlue
-        navigationItem.rightBarButtonItem = searchItem
-        
-        let logoutItem = UIBarButtonItem(
-            image: UIImage(systemName: "rectangle.portrait.and.arrow.right"),
-            style: .plain,
-            target: self,
-            action: #selector(handleLogout)
-        )
-        logoutItem.tintColor = .systemBlue
-        
+        let searchItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(handleSearch))
+        let logoutItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: #selector(handleLogout))
         navigationItem.rightBarButtonItems = [logoutItem, searchItem]
     }
     
-    @objc private func handleLogout() {
-        viewModel.logout()
-    }
-    
+    @objc private func handleLogout() { viewModel.logout() }
     @objc private func handleSearch() {
-        let useCase = SearchManager()
-        let viewModel = SearchViewModel(useCase: useCase)
-        let vc = SearchController(viewModel: viewModel)
+        let vc = SearchController(viewModel: SearchViewModel(useCase: SearchManager()))
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 extension HomeController: TableConfigure, CollectionConfigure {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        categories.count
-    }
-
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { categories.count }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
-        
         let isSelected = (indexPath.item == selectedCategoryIndex)
-        
         cell.titleLabel.text = categories[indexPath.item]
-        cell.contentView.backgroundColor = isSelected ? .systemBlue: .systemGray6
+        cell.contentView.backgroundColor = isSelected ? .systemBlue : .systemGray6
         cell.titleLabel.textColor = isSelected ? .white : .darkGray
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: 100, height: 40)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -154,9 +119,11 @@ extension HomeController: TableConfigure, CollectionConfigure {
         collectionView.reloadData()
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.articles.count
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        .init(width: 100, height: 40)
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { viewModel.articles.count }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeNewsCell", for: indexPath) as! HomeNewsCell
@@ -165,13 +132,19 @@ extension HomeController: TableConfigure, CollectionConfigure {
         cell.selectionStyle = .none
         return cell
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = NewsDetailController(viewModel: .init(useCase: BookMarkManager()))
-        controller.hidesBottomBarWhenPushed = true
         controller.article = viewModel.articles[indexPath.row]
         controller.categoryName = selectedCategory
         navigationController?.pushViewController(controller, animated: true)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (table.contentSize.height - 100 - scrollView.frame.size.height) {
+            viewModel.fetchNextPage()
+        }
+    }
 }
-
 
