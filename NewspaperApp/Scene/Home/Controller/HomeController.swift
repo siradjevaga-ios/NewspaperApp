@@ -123,7 +123,9 @@ extension HomeController: TableConfigure, CollectionConfigure {
         .init(width: 100, height: 40)
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { viewModel.articles.count }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.articles.count
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeNewsCell", for: indexPath) as! HomeNewsCell

@@ -25,9 +25,9 @@ final class HomeViewModel {
         self.isPaginating = false
         
         useCase.getNews(category: category, page: currentPage) { [weak self] data, errorMessage in
-            if let errorMessage = errorMessage {
+            if let errorMessage {
                 self?.error?(errorMessage)
-            } else if let data = data {
+            } else if let data {
                 self?.articles = data.articles ?? []
                 self?.success?()
             }
